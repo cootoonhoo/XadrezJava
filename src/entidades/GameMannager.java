@@ -258,7 +258,6 @@ public class GameMannager {
         }
     }
 
-
     public void validarPosicaoDeDestino(Posicao origem, Posicao destino) throws XadrezException {
         if (!tabuleiro.peca(origem).movimentoPossivel(destino)) {
             throw new XadrezException("Posição de destino inválida!");
@@ -266,7 +265,7 @@ public class GameMannager {
     }
 
     public void instanciarPeca(char coluna, int linha, Peca peca) throws XadrezException {
-        tabuleiro.colocarPeca(peca, new Posicao(8 - linha,coluna - 'a')); //Convertendo coordenadas em xadrez para int
+        tabuleiro.colocarPeca(peca, new Posicao(8 - linha,coluna - 'a')); //Convertendo coordenadas em xadrez para entidade Posicao
         pecas.add(peca);
     }
 

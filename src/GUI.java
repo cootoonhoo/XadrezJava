@@ -79,8 +79,8 @@ public class GUI extends JFrame {
                                     partida.validarPosicaoDeDestino(pecaSelecionada, destino);
                                     partida.fazerMovimento(pecaSelecionada, destino);
 
-                                    //Validar as jogadas especiais!
-                                    // #jogadaespecial Roque
+                                    // Validar as jogadas especiais!
+                                    // Roque
                                     Posicao torre = partida.getPosAnteriorTorreRoque();
                                     if(torre != null)
                                     {
@@ -102,10 +102,11 @@ public class GUI extends JFrame {
                                             }
                                     }
 
-                                    // #jogadaespecial Promoção
+
                                     Peca getPecaDestino = partida.getTabuleiro().getPecas()[destino.getLinha()][ destino.getColuna()];
                                     if(getPecaSelecionada instanceof Peao)
                                     {
+                                        // Promoção
                                         if((getPecaSelecionada.getCor() == Cor.Branca && destino.getLinha() == 0) || (getPecaSelecionada.getCor() == Cor.Preta && destino.getLinha() == 7))
                                         {
                                             if(getPecaDestino.getCor() ==  Cor.Branca)
@@ -113,8 +114,16 @@ public class GUI extends JFrame {
                                             else
                                                 pecaSelecionada.setText("\u265B");
                                         }
+                                        // En Passant
+                                        if(destino.getColuna() != pecaSelecionada.getColuna() && destino.getText() == "")
+                                        {
+                                            // Nesse caso o movimento de mudar de coluna do pião é possivel e a casa pra que ele vai é vazia. Logo isso é um en passant;
+                                            if(getPecaSelecionada.getCor() == Cor.Branca)
+                                                casas[destino.getLinha()+1][destino.getColuna()].setText("");
+                                            else
+                                                casas[destino.getLinha()-1][destino.getColuna()].setText("");
+                                        }
                                     }
-
                                 } catch (XadrezException ex) {
                                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
                                     setCoresClassicasTabuleiro();

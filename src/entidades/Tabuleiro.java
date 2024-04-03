@@ -28,15 +28,7 @@ public class Tabuleiro {
         return pecas[pos.getLinha()][pos.getColuna()];
     }
 
-    public boolean existePeca(Posicao pos) throws XadrezException {
-        validarPosicao(pos);
-        return peca(pos) != null;
-    }
-
-    public void colocarPeca(Peca p, Posicao pos) throws XadrezException {
-        if (existePeca(pos)) {
-            throw new XadrezException("Já existe uma peça nessa posição!");
-        }
+    public void colocarPeca(Peca p, Posicao pos) {
         pecas[pos.getLinha()][pos.getColuna()] = p;
         p.setPosicao(pos);
     }
@@ -53,14 +45,7 @@ public class Tabuleiro {
         pecas[pos.getLinha()][pos.getColuna()] = null;
         return aux;
     }
-
     public boolean posicaoValida(Posicao pos) {
         return pos.getLinha() >= 0 && pos.getLinha() < linhas && pos.getColuna() >= 0 && pos.getColuna() < colunas;
-    }
-
-    public void validarPosicao(Posicao pos) throws XadrezException {
-        if (!posicaoValida(pos)) {
-            throw new XadrezException("Posição inválida!");
-        }
     }
 }
