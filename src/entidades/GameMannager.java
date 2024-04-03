@@ -26,6 +26,22 @@ public class GameMannager {
         return  posAnteriorTorreRoque;
     }
 
+    public Tabuleiro getTab() {
+        return tab;
+    }
+
+    public boolean isTerminada() {
+        return terminada;
+    }
+
+    public int getTurno() {
+        return  turno;
+    }
+
+    public String getJogadorAtual() {
+        return this.jogadorAtual.toString();
+    }
+
     public boolean getXeque() {
         return xeque;
     }
@@ -312,21 +328,5 @@ public class GameMannager {
         colocarNovaPeca('f', 7, new Peao(tab, Cor.Preta, this));
         colocarNovaPeca('g', 7, new Peao(tab, Cor.Preta, this));
         colocarNovaPeca('h', 7, new Peao(tab, Cor.Preta, this));
-    }
-
-    public Tabuleiro getTab() {
-        return tab;
-    }
-
-    public boolean isTerminada() {
-        return terminada;
-    }
-
-    public int getTurno() {
-        return  turno;
-    }
-
-    public String getJogadorAtual() {
-        return this.jogadorAtual.toString();
     }
 }

@@ -52,6 +52,7 @@ public class Tela {
 
 
     public static void imprimirPeca(Peca peca) {
+        // TODO: Alterar a cor das peças quando imprimir!
         if (peca == null) {
             System.out.print("- ");
         } else {

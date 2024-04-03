@@ -74,6 +74,8 @@ public class GUI extends JFrame {
                             if (destino != pecaSelecionada && destino != null) {
 
                                 try {
+                                    // Pegando peça para validação da promoção
+                                    Peca getPecaSelecionada = partida.getTab().getPecas()[pecaSelecionada.getLinha()][ pecaSelecionada.getColuna()];
                                     partida.validarPosicaoDeDestino(pecaSelecionada, destino);
                                     partida.realizaJogada(pecaSelecionada, destino);
 
@@ -98,6 +100,19 @@ public class GUI extends JFrame {
                                                 casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() - 2].setText("");
                                                 casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() + 1].setText(uniPeca);
                                             }
+                                    }
+
+                                    // #jogadaespecial Promoção
+                                    Peca getPecaDestino = partida.getTab().getPecas()[destino.getLinha()][ destino.getColuna()];
+                                    if(getPecaSelecionada instanceof Peao)
+                                    {
+                                        if((getPecaSelecionada.getCor() == Cor.Branca && destino.getLinha() == 0) || (getPecaSelecionada.getCor() == Cor.Preta && destino.getLinha() == 7))
+                                        {
+                                            if(getPecaDestino.getCor() ==  Cor.Branca)
+                                                pecaSelecionada.setText("\u2655");
+                                            else
+                                                pecaSelecionada.setText("\u265B");
+                                        }
                                     }
 
                                 } catch (TabuleiroException ex) {
