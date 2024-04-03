@@ -1,3 +1,9 @@
+import entidades.Cor;
+import entidades.PartidaXadrez;
+import entidades.Peca;
+import entidades.Pecas.*;
+import entidades.Tabuleiro;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -14,15 +20,17 @@ public class GUI extends JFrame {
         setSize(600, 600);
 
         tabuleiroPanel = new JPanel(new GridLayout(8, 8));
-        casas = new JLabel[8][8];
-
-        montarTabuleiro();
-        inicializarPeças();
-        add(tabuleiroPanel);
-        setVisible(true);
+        try {
+            PartidaXadrez partida = new PartidaXadrez();
+            casas = new JLabel[8][8];
+            montarTabuleiro(partida);
+            inicializarPeças();
+            add(tabuleiroPanel);
+            setVisible(true);
+        } catch (Exception ignored) {}
     }
 
-    private void montarTabuleiro() {
+    private void montarTabuleiro(PartidaXadrez partidaXadrez) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 casas[i][j] = new JLabel();
@@ -94,6 +102,25 @@ public class GUI extends JFrame {
             casas[6][j].setText("\u2659"); // Peões
         }
     }
+
+    public Peca getPecaType(String uniCode, Tabuleiro tabuleiro, PartidaXadrez partidaXadrez) {
+        switch (uniCode) {
+            case "\u2654": return new Rei(tabuleiro, Cor.Branca, partidaXadrez);
+            case "\u2655": return new Dama(tabuleiro, Cor.Branca);
+            case "\u2656": return new Torre(tabuleiro, Cor.Branca);
+            case "\u2657": return new Bispo(tabuleiro, Cor.Branca);
+            case "\u2658": return new Cavalo(tabuleiro, Cor.Branca);
+            case "\u2659": return new Peao(tabuleiro, Cor.Branca, partidaXadrez);
+            case "\u265A": return new Rei(tabuleiro, Cor.Preta, partidaXadrez);
+            case "\u265B": return new Dama(tabuleiro, Cor.Preta);
+            case "\u265C": return new Torre(tabuleiro, Cor.Preta);
+            case "\u265D": return new Bispo(tabuleiro, Cor.Preta);
+            case "\u265E": return new Cavalo(tabuleiro, Cor.Preta);
+            case "\u265F": return new Peao(tabuleiro, Cor.Preta, partidaXadrez);
+            default: return null; // Ou lançar uma exceção se for apropriado
+        }
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GUI::new);
