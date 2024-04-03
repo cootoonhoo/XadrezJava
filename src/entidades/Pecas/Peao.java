@@ -3,9 +3,9 @@ package entidades.Pecas;
 import entidades.*;
 
 public class Peao  extends Peca {
-    private final PartidaXadrez partida;
+    private final GameMannager partida;
 
-    public Peao(Tabuleiro tab, Cor cor, PartidaXadrez partida) {
+    public Peao(Tabuleiro tab, Cor cor, GameMannager partida) {
         super(tab, cor);
         this.partida = partida;
     }

@@ -1,4 +1,4 @@
-import entidades.PartidaXadrez;
+import entidades.GameMannager;
 import entidades.Posicao;
 import entidades.Tela;
 import exception.TabuleiroException;
@@ -9,7 +9,7 @@ public class Main {
     public static void main (String[] a)
     {
         try {
-            PartidaXadrez partida = new PartidaXadrez();
+            GameMannager partida = new GameMannager();
 
             while (!partida.isTerminada()) {
 

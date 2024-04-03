@@ -6,13 +6,14 @@ import exception.TabuleiroException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PartidaXadrez {
+public class GameMannager {
     private Tabuleiro tab;
     private int turno;
     private Cor jogadorAtual;
     private boolean terminada;
     private boolean xeque;
     private Peca vulneravelEnPassant;
+    private Posicao posAnteriorTorreRoque;
     private Set<Peca> pecas;
     private Set<Peca> capturadas;
 
@@ -20,11 +21,16 @@ public class PartidaXadrez {
         return vulneravelEnPassant;
     }
 
+    public Posicao getPosAnteriorTorreRoque()
+    {
+        return  posAnteriorTorreRoque;
+    }
+
     public boolean getXeque() {
         return xeque;
     }
 
-    public PartidaXadrez() throws TabuleiroException {
+    public GameMannager() throws TabuleiroException {
         tab = new Tabuleiro(8, 8);
         turno = 1;
         jogadorAtual = Cor.Branca;
@@ -44,6 +50,7 @@ public class PartidaXadrez {
         if (pecaCapturada != null) {
             capturadas.add(pecaCapturada);
         }
+        posAnteriorTorreRoque = null;
 
         // #jogadaespecial roque pequeno
         if (p instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
@@ -52,6 +59,7 @@ public class PartidaXadrez {
             Peca T = tab.retirarPeca(origemT);
             T.incrementarQteMovimentos();
             tab.colocarPeca(T, destinoT);
+            posAnteriorTorreRoque = T.getPosicao();
         }
 
         // #jogadaespecial roque grande
@@ -61,6 +69,7 @@ public class PartidaXadrez {
             Peca T = tab.retirarPeca(origemT);
             T.incrementarQteMovimentos();
             tab.colocarPeca(T, destinoT);
+            posAnteriorTorreRoque = T.getPosicao();
         }
 
         // #jogadaespecial En passant

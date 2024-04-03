@@ -1,12 +1,11 @@
 package entidades;
 
-import java.awt.*;
 import java.util.HashSet;
 import java.util.Scanner;
 
 public class Tela {
 
-    public static void imprimirPartida(PartidaXadrez partida) {
+    public static void imprimirPartida(GameMannager partida) {
         imprimirTabuleiro(partida.getTab());
         System.out.println();
         imprimirPecasCapturadas(partida);
@@ -23,7 +22,7 @@ public class Tela {
         }
     }
 
-    public static void imprimirPecasCapturadas(PartidaXadrez partida) {
+    public static void imprimirPecasCapturadas(GameMannager partida) {
         System.out.println("Peças capturadas:");
         System.out.print("Brancas: ");
         imprimirConjunto(partida.pecasCapturadas(Cor.Branca));

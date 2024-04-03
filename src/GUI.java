@@ -6,15 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class GUI extends JFrame {
     private JPanel tabuleiroPanel;
     private Posicao[][] casas;
     private boolean turnoBranco = true; // Branco começa
     private boolean[][] posicoesPossiveis;
-    private static  PartidaXadrez partida;
+    private static GameMannager partida;
 
     public GUI() {
         super("Xadrez");
@@ -26,16 +24,20 @@ public class GUI extends JFrame {
 
         tabuleiroPanel = new JPanel(new GridLayout(8, 8));
         try {
-            PartidaXadrez partida = new PartidaXadrez();
+            GameMannager partida = new GameMannager();
             casas = new Posicao[8][8];
             montarTabuleiro(partida);
-            inicializarPeças();
+            inicializarPecas();
             add(tabuleiroPanel);
             setVisible(true);
-        } catch (Exception ignored) {}
+        } catch (Exception ex)
+        {
+            // Casos em que o erro não foi previsto
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.ERROR);
+        }
     }
 
-    private void montarTabuleiro(PartidaXadrez partidaXadrez) {
+    private void montarTabuleiro(GameMannager gameMannager) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 casas[i][j] = new Posicao(i,j);
@@ -75,7 +77,28 @@ public class GUI extends JFrame {
                                     partida.validarPosicaoDeDestino(pecaSelecionada, destino);
                                     partida.realizaJogada(pecaSelecionada, destino);
 
-
+                                    //Validar as jogadas especiais!
+                                    // #jogadaespecial Roque
+                                    Posicao torre = partida.getPosAnteriorTorreRoque();
+                                    if(torre != null)
+                                    {
+                                        Cor corTurno = turnoBranco? Cor.Branca: Cor.Preta;
+                                        String uniPeca = turnoBranco? "\u2656" : "\u265C";
+                                        Peca rei = null;
+                                            rei = partida.GetRei(corTurno);
+                                            if(rei.getPosicao().getColuna() > torre.getColuna())
+                                            {
+                                                //Roque pequeno
+                                                casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() + 1].setText("");
+                                                casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() - 1].setText(uniPeca);
+                                            }
+                                            else
+                                            {
+                                                //Roque Grande
+                                                casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() - 2].setText("");
+                                                casas[rei.getPosicao().getLinha()][rei.getPosicao().getColuna() + 1].setText(uniPeca);
+                                            }
+                                    }
 
                                 } catch (TabuleiroException ex) {
                                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -91,7 +114,7 @@ public class GUI extends JFrame {
                             setCoresClassicasTabuleiro();
 
                             //Vendo se o rei inimigo está em xeque
-                            // OBS: O turno é alterado caso o xeque ocorra. Por isso quando turnoBranco for true, mudaremos a cor do rei das brancas
+                            // OBS: O turno é alterado caso o xeque ocorra. Por isso quando turnoBranco for true, mudaremos a cor da casa do rei das brancas
                             if(partida.getXeque())
                             {
                                 Peca rei = null;
@@ -103,7 +126,7 @@ public class GUI extends JFrame {
 
                                 if(partida.isTerminada())
                                 {
-                                    // Mesma lógica do xeque aqui.
+                                    // Mesma lógica do xeque aqui, aplicada para o mate.
                                     if(turnoBranco)
                                         JOptionPane.showMessageDialog(null, "As Pretas venceram o jogo!", "Xeque-Mate!", JOptionPane.INFORMATION_MESSAGE);
                                     else
@@ -146,7 +169,7 @@ public class GUI extends JFrame {
         return peçaBranca == turnoBranco;
     }
 
-    private void inicializarPeças() {
+    private void inicializarPecas() {
         // Posicionando as peças pretas
         casas[0][0].setText("\u265C"); // Torre ♜
         casas[0][7].setText("\u265C"); // Torre ♜
@@ -173,31 +196,18 @@ public class GUI extends JFrame {
             casas[6][j].setText("\u2659"); // Peões ♙
         }
     }
-
-    public Peca getPecaType(String uniCode, Tabuleiro tabuleiro, PartidaXadrez partidaXadrez) {
-        switch (uniCode) {
-            case "\u2654": return new Rei(tabuleiro, Cor.Branca, partidaXadrez);
-            case "\u2655": return new Dama(tabuleiro, Cor.Branca);
-            case "\u2656": return new Torre(tabuleiro, Cor.Branca);
-            case "\u2657": return new Bispo(tabuleiro, Cor.Branca);
-            case "\u2658": return new Cavalo(tabuleiro, Cor.Branca);
-            case "\u2659": return new Peao(tabuleiro, Cor.Branca, partidaXadrez);
-            case "\u265A": return new Rei(tabuleiro, Cor.Preta, partidaXadrez);
-            case "\u265B": return new Dama(tabuleiro, Cor.Preta);
-            case "\u265C": return new Torre(tabuleiro, Cor.Preta);
-            case "\u265D": return new Bispo(tabuleiro, Cor.Preta);
-            case "\u265E": return new Cavalo(tabuleiro, Cor.Preta);
-            case "\u265F": return new Peao(tabuleiro, Cor.Preta, partidaXadrez);
-            default: return null; // Ou lançar uma exceção se for apropriado
-        }
-    }
     public static void main(String[] args)
     {
         try {
-            partida = new PartidaXadrez();
+            partida = new GameMannager();
             SwingUtilities.invokeLater(GUI::new);
         } catch (TabuleiroException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex)
+        {
+            // Casos em que o erro não foi previsto
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.ERROR);
+            return;
         }
     }
 }

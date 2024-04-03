@@ -4,9 +4,9 @@ import entidades.*;
 
 public class Rei extends Peca {
 
-    private PartidaXadrez partida;
+    private GameMannager partida;
 
-    public Rei(Tabuleiro tab, Cor cor, PartidaXadrez partida) {
+    public Rei(Tabuleiro tab, Cor cor, GameMannager partida) {
         super(tab, cor);
         this.partida = partida;
     }
