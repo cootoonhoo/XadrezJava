@@ -68,7 +68,7 @@ public class Rei extends Peca {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
 
-        // #jogadaespecial roque
+        // Roque
         if (qteMovimentos == 0 && !partida.getXeque()) {
             // #jogadaespecial roque pequeno
             Posicao posT1 = new Posicao(posicao.getLinha(), posicao.getColuna() + 3);
@@ -79,7 +79,7 @@ public class Rei extends Peca {
                     mat[posicao.getLinha()][posicao.getColuna() + 2] = true;
                 }
             }
-            // #jogadaespecial roque grande
+            // Roque grande
             Posicao posT2 = new Posicao(posicao.getLinha(), posicao.getColuna() - 4);
             if (testeTorreParaRoque(posT1)) {
                 Posicao p1 = new Posicao(posicao.getLinha(), posicao.getColuna() - 1);
