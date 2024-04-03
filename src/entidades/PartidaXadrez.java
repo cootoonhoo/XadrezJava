@@ -206,7 +206,7 @@ public class PartidaXadrez {
         }
         return aux;
     }
-    private Peca GetRei(Cor cor) {
+    public Peca GetRei(Cor cor) {
         for (Peca x : pecasEmJogo(cor)) {
             if (x instanceof Rei) {
                 return x;
@@ -214,8 +214,6 @@ public class PartidaXadrez {
         }
         return null;
     }
-
-
 
     public boolean estaEmXeque(Cor cor) throws TabuleiroException {
         Peca R = GetRei(cor);

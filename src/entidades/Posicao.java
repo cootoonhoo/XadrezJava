@@ -1,6 +1,8 @@
 package entidades;
 
-public class Posicao {
+import javax.swing.*;
+
+public class Posicao extends JLabel {
     public int linha;
     public int coluna;
 

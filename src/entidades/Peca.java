@@ -1,6 +1,6 @@
 package entidades;
 
-public class Peca {
+public abstract class Peca {
     protected Posicao posicao;
     protected Cor cor;
     protected int qteMovimentos;

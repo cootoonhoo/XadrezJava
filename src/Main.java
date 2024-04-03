@@ -14,7 +14,6 @@ public class Main {
             while (!partida.isTerminada()) {
 
                 try {
-                    System.out.println("\f");
                     Tela.imprimirPartida(partida);
 
                     System.out.println();
@@ -24,7 +23,6 @@ public class Main {
 
                     boolean[][] posicoesPossiveis = partida.getTab().peca(origem).movimentosPossiveis();
 
-                    System.out.println("\f");
                     Tela.imprimirTabuleiro(partida.getTab());
 
                     System.out.println();
@@ -39,7 +37,6 @@ public class Main {
                     scanner.nextLine(); // Aguarda o pressionamento de Enter
                 }
             }
-            System.out.println("\f");
             Tela.imprimirPartida(partida);
         } catch (TabuleiroException e) {
             System.out.println(e.getMessage());

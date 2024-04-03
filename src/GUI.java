@@ -1,8 +1,6 @@
-import entidades.Cor;
-import entidades.PartidaXadrez;
-import entidades.Peca;
+import entidades.*;
 import entidades.Pecas.*;
-import entidades.Tabuleiro;
+import exception.TabuleiroException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,18 +9,23 @@ import java.awt.event.MouseEvent;
 
 public class GUI extends JFrame {
     private JPanel tabuleiroPanel;
-    private JLabel[][] casas;
+    private Posicao[][] casas;
     private boolean turnoBranco = true; // Branco começa
+    private boolean[][] posicoesPossiveis;
+    private static  PartidaXadrez partida;
 
     public GUI() {
         super("Xadrez");
+        ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("./imagens/black-king.png"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setIconImage(logo.getImage());
         setSize(600, 600);
 
         tabuleiroPanel = new JPanel(new GridLayout(8, 8));
         try {
             PartidaXadrez partida = new PartidaXadrez();
-            casas = new JLabel[8][8];
+            casas = new Posicao[8][8];
             montarTabuleiro(partida);
             inicializarPeças();
             add(tabuleiroPanel);
@@ -33,35 +36,67 @@ public class GUI extends JFrame {
     private void montarTabuleiro(PartidaXadrez partidaXadrez) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                casas[i][j] = new JLabel();
+                casas[i][j] = new Posicao(i,j);
                 casas[i][j].setOpaque(true);
                 casas[i][j].setBackground((i + j) % 2 == 0 ? Color.WHITE : Color.GRAY);
                 casas[i][j].setHorizontalAlignment(SwingConstants.CENTER);
-                casas[i][j].setFont(new Font("Arial", Font.PLAIN, 40));
+                casas[i][j].setFont(new Font("Arial Unicode MS", Font.PLAIN, 40));
                 tabuleiroPanel.add(casas[i][j]);
-
                 casas[i][j].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        JLabel source = (JLabel) e.getSource();
-                        if (!source.getText().equals("") && éTurnoCorreto(source.getText())) {
-                            JLabel peçaSelecionada = source;
+                        Posicao source = (Posicao) e.getSource();
+                        if (!source.getText().equals("") && eTurnoCorreto(source.getText())) {
+                            Posicao pecaSelecionada = source;
+                            try {
+                                partida.validarPosicaoDeOrigem(pecaSelecionada);
+                                posicoesPossiveis = partida.getTab().peca(pecaSelecionada).movimentosPossiveis();
+                                mostrarPossiveisCasas(posicoesPossiveis);
+
+                            } catch (TabuleiroException ex) {
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
+                            }
                         }
                     }
 
                     @Override
                     public void mouseReleased(MouseEvent e) {
-                        JLabel source = (JLabel) e.getSource();
-                        JLabel peçaSelecionada = null;
-                        if (!source.getText().equals("") && éTurnoCorreto(source.getText())) {
-                            peçaSelecionada = source;
-                            JLabel destino = (JLabel) tabuleiroPanel.getComponentAt(SwingUtilities.convertPoint(peçaSelecionada, e.getPoint(), tabuleiroPanel));
-                            if (destino != peçaSelecionada && destino != null && destino.getText().equals("")) {
-                                destino.setText(peçaSelecionada.getText());
-                                peçaSelecionada.setText("");
+                        Posicao source = (Posicao) e.getSource();
+                        Posicao pecaSelecionada = null;
+                        if (!source.getText().equals("") && eTurnoCorreto(source.getText())) {
+                            pecaSelecionada = source;
+                            Posicao destino = (Posicao) tabuleiroPanel.getComponentAt(SwingUtilities.convertPoint(pecaSelecionada, e.getPoint(), tabuleiroPanel));
+
+                            if (destino != pecaSelecionada && destino != null) {
+
+                                try {
+                                    partida.validarPosicaoDeDestino(pecaSelecionada, destino);
+                                    partida.realizaJogada(pecaSelecionada, destino);
+                                    //Vendo se o rei inimigo está em xeque
+
+
+                                } catch (TabuleiroException ex) {
+                                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
+                                    setCoresClassicasTabuleiro();
+                                    return;
+                                }
+
+                                destino.setText(pecaSelecionada.getText());
+                                pecaSelecionada.setText("");
                                 turnoBranco = !turnoBranco; // Alternar o turno
                             }
-                            peçaSelecionada = null;
+                            pecaSelecionada = null;
+                            setCoresClassicasTabuleiro();
+                            if(partida.getXeque())
+                            {
+                                Peca rei = null;
+                                if(turnoBranco)
+                                    rei = partida.GetRei(Cor.Branca);
+                                else
+                                    rei = partida.GetRei(Cor.Preta);
+
+                                MostrarCheque(rei.getPosicao().getLinha(), rei.getPosicao().getColuna());
+                            }
                         }
                     }
                 });
@@ -69,7 +104,29 @@ public class GUI extends JFrame {
         }
     }
 
-    private boolean éTurnoCorreto(String peça) {
+    private void setCoresClassicasTabuleiro()
+    {
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
+                casas[i][j].setBackground((i + j) % 2 == 0 ? Color.WHITE : Color.GRAY);
+    }
+
+    private void mostrarPossiveisCasas(boolean[][] posicoesPossiveis)
+    {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if(posicoesPossiveis[i][j] == true)
+                    casas[i][j].setBackground(new Color(51,153,51));
+            }
+        }
+    }
+
+    private void MostrarCheque(int x, int y)
+    {
+        casas[x][y].setBackground(new Color(150,0,0));
+    }
+
+    private boolean eTurnoCorreto(String peça) {
         // Verifica se a peça é branca e é o turno das brancas ou se a peça é preta e é o turno das pretas
         boolean peçaBranca = peça.matches("[\u2654-\u2659]");
         return peçaBranca == turnoBranco;
@@ -120,9 +177,13 @@ public class GUI extends JFrame {
             default: return null; // Ou lançar uma exceção se for apropriado
         }
     }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(GUI::new);
+    public static void main(String[] args)
+    {
+        try {
+            partida = new PartidaXadrez();
+            SwingUtilities.invokeLater(GUI::new);
+        } catch (TabuleiroException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }
