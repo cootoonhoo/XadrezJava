@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class GUI extends JFrame {
     private JPanel tabuleiroPanel;
@@ -72,7 +74,7 @@ public class GUI extends JFrame {
                                 try {
                                     partida.validarPosicaoDeDestino(pecaSelecionada, destino);
                                     partida.realizaJogada(pecaSelecionada, destino);
-                                    //Vendo se o rei inimigo está em xeque
+
 
 
                                 } catch (TabuleiroException ex) {
@@ -87,6 +89,9 @@ public class GUI extends JFrame {
                             }
                             pecaSelecionada = null;
                             setCoresClassicasTabuleiro();
+
+                            //Vendo se o rei inimigo está em xeque
+                            // OBS: O turno é alterado caso o xeque ocorra. Por isso quando turnoBranco for true, mudaremos a cor do rei das brancas
                             if(partida.getXeque())
                             {
                                 Peca rei = null;
@@ -94,8 +99,17 @@ public class GUI extends JFrame {
                                     rei = partida.GetRei(Cor.Branca);
                                 else
                                     rei = partida.GetRei(Cor.Preta);
-
                                 MostrarCheque(rei.getPosicao().getLinha(), rei.getPosicao().getColuna());
+
+                                if(partida.isTerminada())
+                                {
+                                    // Mesma lógica do xeque aqui.
+                                    if(turnoBranco)
+                                        JOptionPane.showMessageDialog(null, "As Pretas venceram o jogo!", "Xeque-Mate!", JOptionPane.INFORMATION_MESSAGE);
+                                    else
+                                        JOptionPane.showMessageDialog(null, "As Brancas venceram o jogo!", "Xeque-Mate!", JOptionPane.INFORMATION_MESSAGE);
+                                    dispose();
+                                }
                             }
                         }
                     }
@@ -134,29 +148,29 @@ public class GUI extends JFrame {
 
     private void inicializarPeças() {
         // Posicionando as peças pretas
-        casas[0][0].setText("\u265C"); // Torre
-        casas[0][7].setText("\u265C"); // Torre
-        casas[0][1].setText("\u265E"); // Cavalo
-        casas[0][6].setText("\u265E"); // Cavalo
-        casas[0][2].setText("\u265D"); // Bispo
-        casas[0][5].setText("\u265D"); // Bispo
-        casas[0][3].setText("\u265B"); // Rainha
-        casas[0][4].setText("\u265A"); // Rei
+        casas[0][0].setText("\u265C"); // Torre ♜
+        casas[0][7].setText("\u265C"); // Torre ♜
+        casas[0][1].setText("\u265E"); // Cavalo ♞
+        casas[0][6].setText("\u265E"); // Cavalo ♞
+        casas[0][2].setText("\u265D"); // Bispo ♝
+        casas[0][5].setText("\u265D"); // Bispo ♝
+        casas[0][3].setText("\u265B"); // Rainha ♛
+        casas[0][4].setText("\u265A"); // Rei ♚
         for (int j = 0; j < 8; j++) {
-            casas[1][j].setText("\u265F"); // Peões
+            casas[1][j].setText("\u265F"); // Peões ♟
         }
 
         // Posicionando as peças brancas
-        casas[7][0].setText("\u2656"); // Torre
-        casas[7][7].setText("\u2656"); // Torre
-        casas[7][1].setText("\u2658"); // Cavalo
-        casas[7][6].setText("\u2658"); // Cavalo
-        casas[7][2].setText("\u2657"); // Bispo
-        casas[7][5].setText("\u2657"); // Bispo
-        casas[7][3].setText("\u2655"); // Rainha
-        casas[7][4].setText("\u2654"); // Rei
+        casas[7][0].setText("\u2656"); // Torre ♖
+        casas[7][7].setText("\u2656"); // Torre ♖
+        casas[7][1].setText("\u2658"); // Cavalo ♘
+        casas[7][6].setText("\u2658"); // Cavalo ♘
+        casas[7][2].setText("\u2657"); // Bispo ♗
+        casas[7][5].setText("\u2657"); // Bispo ♗
+        casas[7][3].setText("\u2655"); // Rainha ♕
+        casas[7][4].setText("\u2654"); // Rei ♔
         for (int j = 0; j < 8; j++) {
-            casas[6][j].setText("\u2659"); // Peões
+            casas[6][j].setText("\u2659"); // Peões ♙
         }
     }
 
