@@ -11,7 +11,7 @@ public class Posicao extends JLabel {
         this.coluna = coluna;
     }
 
-    public void definirValores(int linha, int coluna) {
+    public void setarPosicao(int linha, int coluna) {
         this.linha = linha;
         this.coluna = coluna;
     }
@@ -30,10 +30,5 @@ public class Posicao extends JLabel {
 
     public void setColuna(int coluna) {
         this.coluna = coluna;
-    }
-
-    @Override
-    public String toString() {
-        return linha + ", " + coluna;
     }
 }

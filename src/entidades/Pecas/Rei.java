@@ -11,11 +11,6 @@ public class Rei extends Peca {
         this.partida = partida;
     }
 
-    @Override
-    public String toString() {
-        return "R";
-    }
-
     private boolean podeMover(Posicao pos) {
         Peca p = tab.peca(pos);
         return p == null || p.getCor() != cor;
@@ -33,42 +28,42 @@ public class Rei extends Peca {
         Posicao pos = new Posicao(0, 0);
 
         // acima
-        pos.definirValores(posicao.getLinha() - 1, posicao.getColuna());
+        pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna());
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // ne
-        pos.definirValores(posicao.getLinha() - 1, posicao.getColuna() + 1);
+        pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna() + 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // direita
-        pos.definirValores(posicao.getLinha(), posicao.getColuna() + 1);
+        pos.setarPosicao(posicao.getLinha(), posicao.getColuna() + 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // sd
-        pos.definirValores(posicao.getLinha() + 1, posicao.getColuna() + 1);
+        pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna() + 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // abaixo
-        pos.definirValores(posicao.getLinha() + 1, posicao.getColuna());
+        pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna());
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // so
-        pos.definirValores(posicao.getLinha() + 1, posicao.getColuna() - 1);
+        pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna() - 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // esquerda
-        pos.definirValores(posicao.getLinha(), posicao.getColuna() - 1);
+        pos.setarPosicao(posicao.getLinha(), posicao.getColuna() - 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }
         // no
-        pos.definirValores(posicao.getLinha() - 1, posicao.getColuna() - 1);
+        pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna() - 1);
         if (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
         }

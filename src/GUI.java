@@ -1,6 +1,6 @@
 import entidades.*;
 import entidades.Pecas.*;
-import exception.TabuleiroException;
+import exception.XadrezException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,20 +44,20 @@ public class GUI extends JFrame {
                 casas[i][j].setOpaque(true);
                 casas[i][j].setBackground((i + j) % 2 == 0 ? Color.WHITE : Color.GRAY);
                 casas[i][j].setHorizontalAlignment(SwingConstants.CENTER);
-                casas[i][j].setFont(new Font("Arial Unicode MS", Font.PLAIN, 40));
+                casas[i][j].setFont(new Font("Arial Unicode MS", Font.PLAIN, 55));
                 tabuleiroPanel.add(casas[i][j]);
                 casas[i][j].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         Posicao source = (Posicao) e.getSource();
-                        if (!source.getText().equals("") && eTurnoCorreto(source.getText())) {
+                        if (!source.getText().equals("") && TurnoCorreto(source.getText())) {
                             Posicao pecaSelecionada = source;
                             try {
                                 partida.validarPosicaoDeOrigem(pecaSelecionada);
-                                posicoesPossiveis = partida.getTab().peca(pecaSelecionada).movimentosPossiveis();
+                                posicoesPossiveis = partida.getTabuleiro().peca(pecaSelecionada).movimentosPossiveis();
                                 mostrarPossiveisCasas(posicoesPossiveis);
 
-                            } catch (TabuleiroException ex) {
+                            } catch (XadrezException ex) {
                                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
                             }
                         }
@@ -67,7 +67,7 @@ public class GUI extends JFrame {
                     public void mouseReleased(MouseEvent e) {
                         Posicao source = (Posicao) e.getSource();
                         Posicao pecaSelecionada = null;
-                        if (!source.getText().equals("") && eTurnoCorreto(source.getText())) {
+                        if (!source.getText().equals("") && TurnoCorreto(source.getText())) {
                             pecaSelecionada = source;
                             Posicao destino = (Posicao) tabuleiroPanel.getComponentAt(SwingUtilities.convertPoint(pecaSelecionada, e.getPoint(), tabuleiroPanel));
 
@@ -75,9 +75,9 @@ public class GUI extends JFrame {
 
                                 try {
                                     // Pegando peça para validação da promoção
-                                    Peca getPecaSelecionada = partida.getTab().getPecas()[pecaSelecionada.getLinha()][ pecaSelecionada.getColuna()];
+                                    Peca getPecaSelecionada = partida.getTabuleiro().getPecas()[pecaSelecionada.getLinha()][ pecaSelecionada.getColuna()];
                                     partida.validarPosicaoDeDestino(pecaSelecionada, destino);
-                                    partida.realizaJogada(pecaSelecionada, destino);
+                                    partida.fazerMovimento(pecaSelecionada, destino);
 
                                     //Validar as jogadas especiais!
                                     // #jogadaespecial Roque
@@ -87,7 +87,7 @@ public class GUI extends JFrame {
                                         Cor corTurno = turnoBranco? Cor.Branca: Cor.Preta;
                                         String uniPeca = turnoBranco? "\u2656" : "\u265C";
                                         Peca rei = null;
-                                            rei = partida.GetRei(corTurno);
+                                            rei = partida.getReiEmJogo(corTurno);
                                             if(rei.getPosicao().getColuna() > torre.getColuna())
                                             {
                                                 //Roque pequeno
@@ -103,7 +103,7 @@ public class GUI extends JFrame {
                                     }
 
                                     // #jogadaespecial Promoção
-                                    Peca getPecaDestino = partida.getTab().getPecas()[destino.getLinha()][ destino.getColuna()];
+                                    Peca getPecaDestino = partida.getTabuleiro().getPecas()[destino.getLinha()][ destino.getColuna()];
                                     if(getPecaSelecionada instanceof Peao)
                                     {
                                         if((getPecaSelecionada.getCor() == Cor.Branca && destino.getLinha() == 0) || (getPecaSelecionada.getCor() == Cor.Preta && destino.getLinha() == 7))
@@ -115,10 +115,15 @@ public class GUI extends JFrame {
                                         }
                                     }
 
-                                } catch (TabuleiroException ex) {
+                                } catch (XadrezException ex) {
                                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
                                     setCoresClassicasTabuleiro();
                                     return;
+                                } catch (Exception ex)
+                                {
+                                    // Casos em que o erro não foi previsto
+                                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro não esperado", JOptionPane.ERROR);
+                                    dispose();
                                 }
 
                                 destino.setText(pecaSelecionada.getText());
@@ -134,9 +139,9 @@ public class GUI extends JFrame {
                             {
                                 Peca rei = null;
                                 if(turnoBranco)
-                                    rei = partida.GetRei(Cor.Branca);
+                                    rei = partida.getReiEmJogo(Cor.Branca);
                                 else
-                                    rei = partida.GetRei(Cor.Preta);
+                                    rei = partida.getReiEmJogo(Cor.Preta);
                                 MostrarCheque(rei.getPosicao().getLinha(), rei.getPosicao().getColuna());
 
                                 if(partida.isTerminada())
@@ -178,10 +183,10 @@ public class GUI extends JFrame {
         casas[x][y].setBackground(new Color(150,0,0));
     }
 
-    private boolean eTurnoCorreto(String peça) {
+    private boolean TurnoCorreto(String peca) {
         // Verifica se a peça é branca e é o turno das brancas ou se a peça é preta e é o turno das pretas
-        boolean peçaBranca = peça.matches("[\u2654-\u2659]");
-        return peçaBranca == turnoBranco;
+        boolean pecaBranca = peca.matches("[\u2654-\u2659]");
+        return pecaBranca == turnoBranco;
     }
 
     private void inicializarPecas() {
@@ -216,12 +221,12 @@ public class GUI extends JFrame {
         try {
             partida = new GameMannager();
             SwingUtilities.invokeLater(GUI::new);
-        } catch (TabuleiroException e) {
+        } catch (XadrezException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Aviso", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex)
         {
             // Casos em que o erro não foi previsto
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Aviso", JOptionPane.ERROR);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro não esperado", JOptionPane.ERROR);
             return;
         }
     }

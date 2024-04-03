@@ -10,12 +10,6 @@ public class Bispo extends Peca {
         public Bispo(Tabuleiro tab, Cor cor) {
             super(tab, cor);
         }
-
-        @Override
-        public String toString() {
-            return "B";
-        }
-
         private boolean podeMover(Posicao pos) {
             Peca p = tab.peca(pos);
             return p == null || p.getCor() != cor;
@@ -26,47 +20,38 @@ public class Bispo extends Peca {
             boolean[][] mat = new boolean[tab.getLinhas()][tab.getColunas()];
 
             Posicao pos = new Posicao(0, 0);
-
-            // NO
-            pos.definirValores(posicao.getLinha() - 1, posicao.getColuna() - 1);
+            pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna() - 1);
             while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.getLinha()][pos.getColuna()] = true;
                 if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
                     break;
                 }
-                pos.definirValores(pos.getLinha() - 1, pos.getColuna() - 1);
+                pos.setarPosicao(pos.getLinha() - 1, pos.getColuna() - 1);
             }
-
-            // NE
-            pos.definirValores(posicao.getLinha() - 1, posicao.getColuna() + 1);
+            pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna() + 1);
             while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.getLinha()][pos.getColuna()] = true;
                 if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
                     break;
                 }
-                pos.definirValores(pos.getLinha() - 1, pos.getColuna() + 1);
+                pos.setarPosicao(pos.getLinha() - 1, pos.getColuna() + 1);
             }
-
-            // SE
-            pos.definirValores(posicao.getLinha() + 1, posicao.getColuna() + 1);
+            pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna() + 1);
             while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.getLinha()][pos.getColuna()] = true;
                 if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
                     break;
                 }
-                pos.definirValores(pos.getLinha() + 1, pos.getColuna() + 1);
+                pos.setarPosicao(pos.getLinha() + 1, pos.getColuna() + 1);
             }
-
-            // SO
-            pos.definirValores(posicao.getLinha() + 1, posicao.getColuna() - 1);
+            pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna() - 1);
             while (tab.posicaoValida(pos) && podeMover(pos)) {
                 mat[pos.getLinha()][pos.getColuna()] = true;
                 if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
                     break;
                 }
-                pos.definirValores(pos.getLinha() + 1, pos.getColuna() - 1);
+                pos.setarPosicao(pos.getLinha() + 1, pos.getColuna() - 1);
             }
-
             return mat;
         }
     }

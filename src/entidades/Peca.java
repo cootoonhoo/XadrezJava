@@ -34,11 +34,11 @@ public abstract class Peca {
         return movimentosPossiveis()[pos.getLinha()][pos.getColuna()];
     }
 
-    public void incrementarQteMovimentos() {
+    public void incrementarMovimentos() {
         qteMovimentos++;
     }
 
-    public void decrementarQteMovimentos() {
+    public void decrementarMovimentos() {
         qteMovimentos--;
     }
 

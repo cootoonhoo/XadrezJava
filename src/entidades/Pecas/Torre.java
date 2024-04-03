@@ -11,11 +11,6 @@ public class Torre extends Peca {
         super(tab, cor);
     }
 
-    @Override
-    public String toString() {
-        return "T";
-    }
-
     private boolean podeMover(Posicao pos) {
         Peca p = tab.peca(pos);
         return p == null || p.getCor() != cor;
@@ -28,7 +23,7 @@ public class Torre extends Peca {
         Posicao pos = new Posicao(0, 0);
 
         // acima
-        pos.definirValores(posicao.getLinha() - 1, posicao.getColuna());
+        pos.setarPosicao(posicao.getLinha() - 1, posicao.getColuna());
         while (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
             if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
@@ -38,7 +33,7 @@ public class Torre extends Peca {
         }
 
         // abaixo
-        pos.definirValores(posicao.getLinha() + 1, posicao.getColuna());
+        pos.setarPosicao(posicao.getLinha() + 1, posicao.getColuna());
         while (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
             if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
@@ -47,7 +42,7 @@ public class Torre extends Peca {
             pos.setLinha(pos.getLinha() + 1);
         }
         // direita
-        pos.definirValores(posicao.getLinha(), posicao.getColuna() + 1);
+        pos.setarPosicao(posicao.getLinha(), posicao.getColuna() + 1);
         while (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
             if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
@@ -56,7 +51,7 @@ public class Torre extends Peca {
             pos.setColuna(pos.getColuna() + 1);
         }
         // esquerda
-        pos.definirValores(posicao.getLinha(), posicao.getColuna() - 1);
+        pos.setarPosicao(posicao.getLinha(), posicao.getColuna() - 1);
         while (tab.posicaoValida(pos) && podeMover(pos)) {
             mat[pos.getLinha()][pos.getColuna()] = true;
             if (tab.peca(pos) != null && tab.peca(pos).getCor() != cor) {
